@@ -26,7 +26,7 @@ router.post("/forgotPassword", async (req, response) => {
   await sendMail(existingUser.mailid, otp_number, req, response);
 });
 
-router.post("/forgotPassword/:username", auth, async (req, response) => {
+router.post("/forgotPassword/:username", async (req, response) => {
   const { username } = req.params;
   const otp = req.body.otp;
   const new_pwd = req.body.new_pwd;
