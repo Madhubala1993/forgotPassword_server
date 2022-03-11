@@ -1,5 +1,11 @@
 import express from "express";
-import { createUser, genPassword, getUserByName } from "./helper.js";
+import {
+  createUser,
+  genConfirmPwd,
+  genPassword,
+  getAllUsers,
+  getUserByName,
+} from "./helper.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
@@ -73,9 +79,14 @@ async function sendMail(mailid, otp_number, req, response) {
   });
 }
 
+router.get("/", async (request, response) => {
+  const users = await getAllUsers(request);
+  response.send(users);
+  console.log(users);
+});
 router.post("/signup", async (request, response) => {
-  const { username, mailid, password } = request.body;
-  console.log(username, mailid, password);
+  const { username, mailid, password, confirmPwd } = request.body;
+  console.log(username, mailid, password, confirmPwd);
   const isUserExist = await getUserByName(username);
   console.log(isUserExist);
   if (isUserExist) {
@@ -88,10 +99,16 @@ router.post("/signup", async (request, response) => {
     response.status(400).send({ message: "Password pattern does not match" });
     return;
   }
+  if (password != confirmPwd) {
+    response.status(400).send({ message: "Confirm Password does not match" });
+    return;
+  }
 
   const hashedPassword = await genPassword(password);
-  const result = createUser(username, mailid, hashedPassword);
-  response.send(result);
+  const hashedConfirmPwd = await genConfirmPwd(confirmPwd);
+  const result = createUser(username, mailid, hashedPassword, hashedConfirmPwd);
+  response.send({ message: "Registered successfully" });
+  console.log("Registered successfully");
 });
 
 router.post("/login", async (request, response) => {
