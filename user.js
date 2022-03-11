@@ -70,7 +70,7 @@ async function sendMail(mailid, otp_number, req, response) {
 
   mailTransporter.sendMail(mailDetails, async (err) => {
     if (err) {
-      return console.log(user, pass);
+      return console.log(process.env.mail_id, process.env.password);
       // response.status(400).send("email is not sent");
     }
     return response.send({
