@@ -93,14 +93,14 @@ router.post("/signup", async (request, response) => {
     response.status(400).send({ message: "User already exists" });
     return;
   }
+  if (password != confirmPwd) {
+    response.status(400).send({ message: "Confirm Password does not match" });
+    return;
+  }
   if (
     !/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@!#%&]).{8,}$/g.test(password)
   ) {
     response.status(400).send({ message: "Password pattern does not match" });
-    return;
-  }
-  if (password != confirmPwd) {
-    response.status(400).send({ message: "Confirm Password does not match" });
     return;
   }
 
@@ -108,6 +108,7 @@ router.post("/signup", async (request, response) => {
   const hashedConfirmPwd = await genConfirmPwd(confirmPwd);
   const result = createUser(username, mailid, hashedPassword, hashedConfirmPwd);
   response.send({ message: "Registered successfully" });
+  response.send(result);
   console.log("Registered successfully");
 });
 
