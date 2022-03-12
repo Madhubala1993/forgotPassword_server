@@ -140,7 +140,6 @@ router.post("/signup", async (request, response) => {
   const hashedConfirmPwd = await genConfirmPwd(confirmPwd);
   const result = createUser(username, mailid, hashedPassword, hashedConfirmPwd);
   response.send({ message: "Registered successfully" });
-  response.send(result);
   console.log("Registered successfully");
 });
 
