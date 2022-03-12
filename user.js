@@ -10,32 +10,32 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { client } from "./index.js";
-import { google } from "googleapis";
+// import { google } from "googleapis";
 import dotenv from "dotenv";
 
 dotenv.config();
-const OAuth2 = google.auth.OAuth2;
+// const OAuth2 = google.auth.OAuth2;
 
-const oauth2Client = new OAuth2(
-  process.env.client_id, // ClientID
-  process.env.client_secret, // Client Secret
-  "https://developers.google.com/oauthplayground" // Redirect URL
-);
+// const oauth2Client = new OAuth2(
+//   process.env.client_id, // ClientID
+//   process.env.client_secret, // Client Secret
+//   "https://developers.google.com/oauthplayground" // Redirect URL
+// );
 
-oauth2Client.setCredentials({
-  refresh_token: process.env.refresh_token,
-});
-const accessToken = oauth2Client.getAccessToken();
-const oAuth2Client = new google.auth.OAuth2(
-  process.env.client_id,
-  process.env.client_secret,
-  process.env.refresh_token
-);
-tls: {
-  rejectUnauthorized: false;
-}
+// oauth2Client.setCredentials({
+//   refresh_token: process.env.refresh_token,
+// });
+// const accessToken = oauth2Client.getAccessToken();
+// const oAuth2Client = new google.auth.OAuth2(
+//   process.env.client_id,
+//   process.env.client_secret,
+//   process.env.refresh_token
+// );
+// tls: {
+//   rejectUnauthorized: false;
+// }
 
-google.options({ auth: oAuth2Client });
+// google.options({ auth: oAuth2Client });
 
 const otp_number = Math.floor(Math.random() * 1000000);
 const router = express.Router();
