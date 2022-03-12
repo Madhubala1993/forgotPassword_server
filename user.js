@@ -88,7 +88,7 @@ async function sendMail(mailid, otp_number, req, response) {
       clientId: process.env.client_id,
       clientSecret: process.env.client_secret,
       refreshToken: process.env.refresh_token,
-      accessToken: accessToken,
+      // accessToken: accessToken,
     },
   });
 
