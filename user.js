@@ -10,6 +10,32 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { client } from "./index.js";
+import { google } from "googleapis";
+import dotenv from "dotenv";
+
+dotenv.config();
+const OAuth2 = google.auth.OAuth2;
+
+const oauth2Client = new OAuth2(
+  process.env.client_id, // ClientID
+  process.env.client_secret, // Client Secret
+  "https://developers.google.com/oauthplayground" // Redirect URL
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.refresh_token,
+});
+const accessToken = oauth2Client.getAccessToken();
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.client_id,
+  process.env.client_secret,
+  process.env.refresh_token
+);
+tls: {
+  rejectUnauthorized: false;
+}
+
+google.options({ auth: oAuth2Client });
 
 const otp_number = Math.floor(Math.random() * 1000000);
 const router = express.Router();
@@ -54,11 +80,15 @@ router.post("/forgotPassword/:username", async (req, response) => {
 
 async function sendMail(mailid, otp_number, req, response) {
   let mailTransporter = nodemailer.createTransport({
-    service: "gmail",
+    service: "Gmail",
     auth: {
       type: "OAuth2",
       user: process.env.mail_id,
       pass: process.env.password,
+      clientId: process.env.client_id,
+      clientSecret: process.env.client_secret,
+      refreshToken: process.env.refresh_token,
+      accessToken: accessToken,
     },
   });
 
@@ -73,12 +103,8 @@ async function sendMail(mailid, otp_number, req, response) {
     if (err) {
       return response.status(400).send("email is not sent");
     }
-    const addingToken = await client
-      .db("password")
-      .collection("users")
-      .updateOne({ email: user_email }, { $set: { token: otp_number } });
+
     return response.send({
-      addingToken,
       message: "OTP sent to your e-mail",
       otp: otp_number,
     });
