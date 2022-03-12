@@ -56,6 +56,7 @@ async function sendMail(mailid, otp_number, req, response) {
   let mailTransporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
+      type: "OAuth2",
       user: process.env.mail_id,
       pass: process.env.password,
     },
