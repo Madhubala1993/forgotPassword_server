@@ -62,7 +62,7 @@ async function sendMail(mailid, otp_number, req, response) {
   });
 
   let mailDetails = {
-    from: process.env.mail_id,
+    from: "<noReply>",
     to: mailid,
     subject: "OTP",
     text: `The verificaion code is ${otp_number}`,
@@ -72,7 +72,12 @@ async function sendMail(mailid, otp_number, req, response) {
     if (err) {
       return response.status(400).send("email is not sent");
     }
+    const addingToken = await client
+      .db("password")
+      .collection("users")
+      .updateOne({ email: user_email }, { $set: { token: otp_number } });
     return response.send({
+      addingToken,
       message: "OTP sent to your e-mail",
       otp: otp_number,
     });
